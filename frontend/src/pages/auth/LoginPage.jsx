@@ -215,7 +215,7 @@ const LoginPage = () => {
               <p className="font-semibold mb-1">Dev credentials hint</p>
               <p>Admin: admin@example.com / Admin123!</p>
               <p>Counselor: counselor@example.com / Counselor123!</p>
-              <p>Student: student@example.com / Student123!</p>
+              <p>Student: karim@student.com / Student123!</p>
             </div>
           )}
         </div>
