@@ -24,7 +24,7 @@ const NAV_LINKS = {
   ],
 };
 
-const Sidebar = () => {
+const Sidebar = ({ onClose }) => {
   const { user } = useAuth();
   const [logoutFn] = useLogoutMutation();
   const navigate = useNavigate();
@@ -36,19 +36,35 @@ const Sidebar = () => {
     navigate('/login');
   };
 
+  const handleNavClick = () => {
+    if (onClose) onClose();
+  };
+
   return (
-    <aside className="w-64 min-h-screen bg-gray-900 text-white flex flex-col flex-shrink-0">
+    <aside className="w-64 h-full bg-gray-900 text-white flex flex-col overflow-y-auto">
+
       {/* Brand */}
-      <div className="p-5 border-b border-gray-800">
+      <div className="p-5 border-b border-gray-800 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center text-base">
+          <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center text-base flex-shrink-0">
             🎓
           </div>
-          <div>
-            <p className="text-sm font-bold text-white">StudyAbroad</p>
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-white">StudyConsult</p>
             <p className="text-[10px] text-gray-400 capitalize">{user?.role} Portal</p>
           </div>
         </div>
+
+        {/* Close button — mobile only */}
+        <button
+          onClick={onClose}
+          className="lg:hidden p-1.5 rounded-lg hover:bg-gray-800 text-gray-400 hover:text-white transition-colors flex-shrink-0 ml-2"
+          aria-label="Close menu"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
       {/* Navigation */}
@@ -57,6 +73,7 @@ const Sidebar = () => {
           <NavLink
             key={link.path}
             to={link.path}
+            onClick={handleNavClick}
             className={({ isActive }) =>
               [
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
@@ -66,14 +83,14 @@ const Sidebar = () => {
               ].join(' ')
             }
           >
-            <span className="text-base w-5 text-center">{link.icon}</span>
+            <span className="text-base w-5 text-center flex-shrink-0">{link.icon}</span>
             {link.label}
           </NavLink>
         ))}
       </nav>
 
       {/* User footer */}
-      <div className="p-4 border-t border-gray-800">
+      <div className="p-4 border-t border-gray-800 flex-shrink-0">
         <div className="flex items-center gap-3 mb-3 px-1">
           <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-bold uppercase flex-shrink-0">
             {user?.name?.[0] || 'U'}
