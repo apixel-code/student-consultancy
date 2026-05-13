@@ -7,6 +7,7 @@ import {
   useDeleteUniversityMutation,
 } from '../../features/universities/universityApi.js';
 import Loader from '../../components/common/Loader.jsx';
+import DeleteModal from '../../components/common/DeleteModal.jsx';
 
 const emptyForm = { name: '', country: '', city: '', ranking: '', website: '', description: '' };
 
@@ -17,6 +18,7 @@ const ManageUniversities = () => {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [logoFile, setLogoFile] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const { data, isLoading } = useGetAllUniversitiesQuery({ page, limit: 10, search: search || undefined });
   const [createUniversity, { isLoading: creating }] = useCreateUniversityMutation();
@@ -47,8 +49,10 @@ const ManageUniversities = () => {
     if (result.data) { setShowModal(false); setEditing(null); }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Delete this university?')) await deleteUniversity(id);
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    await deleteUniversity(deleteTarget.id);
+    setDeleteTarget(null);
   };
 
   return (
@@ -81,7 +85,7 @@ const ManageUniversities = () => {
                 {u.ranking && <p className="text-xs text-gray-400 mt-1">Rank #{u.ranking}</p>}
                 <div className="flex gap-2 mt-3">
                   <button onClick={() => openEdit(u)} className="text-xs text-blue-600 hover:underline">Edit</button>
-                  <button onClick={() => handleDelete(u._id)} className="text-xs text-red-600 hover:underline">Delete</button>
+                  <button onClick={() => setDeleteTarget({ id: u._id, name: u.name })} className="text-xs text-red-600 hover:underline">Delete</button>
                 </div>
               </div>
             ))}
@@ -148,6 +152,15 @@ const ManageUniversities = () => {
           </div>
         </div>
       )}
+
+      <DeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete University?"
+        description="This university and all its associated courses will be permanently deleted."
+        itemName={deleteTarget?.name}
+      />
     </DashboardLayout>
   );
 };

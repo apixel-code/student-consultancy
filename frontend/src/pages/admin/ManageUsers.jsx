@@ -7,6 +7,7 @@ import {
   useDeleteUserMutation,
 } from '../../features/users/userApi.js';
 import Loader from '../../components/common/Loader.jsx';
+import DeleteModal from '../../components/common/DeleteModal.jsx';
 
 const ROLES = ['admin', 'counselor', 'student'];
 
@@ -18,6 +19,7 @@ const ManageUsers = () => {
   const [search, setSearch] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const [deleteTarget, setDeleteTarget] = useState(null); // { id, name }
 
   const { data, isLoading } = useGetAllUsersQuery({
     page,
@@ -42,10 +44,10 @@ const ManageUsers = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Delete this user?')) {
-      await deleteUser(id);
-    }
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    await deleteUser(deleteTarget.id);
+    setDeleteTarget(null);
   };
 
   return (
@@ -115,7 +117,7 @@ const ManageUsers = () => {
                           {u.isActive ? 'Deactivate' : 'Activate'}
                         </button>
                         <button
-                          onClick={() => handleDelete(u._id)}
+                          onClick={() => setDeleteTarget({ id: u._id, name: u.name })}
                           className="text-xs text-red-600 hover:underline"
                         >
                           Delete
@@ -183,6 +185,15 @@ const ManageUsers = () => {
           </div>
         </div>
       )}
+
+      <DeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete User?"
+        description="This user and all their data will be permanently deleted."
+        itemName={deleteTarget?.name}
+      />
     </DashboardLayout>
   );
 };

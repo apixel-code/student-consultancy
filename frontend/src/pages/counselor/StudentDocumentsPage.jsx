@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import DashboardLayout from '../../layouts/DashboardLayout.jsx';
-import {
-  useGetDocumentsByStudentQuery,
-  useVerifyDocumentMutation,
-} from '../../features/documents/documentApi.js';
+import { useGetDocumentsByStudentQuery } from '../../features/documents/documentApi.js';
 import { useGetStudentByIdQuery } from '../../features/students/studentApi.js';
 import DocumentCard from '../../components/documents/DocumentCard.jsx';
 import RejectModal from '../../components/documents/RejectModal.jsx';
+import VerifyModal from '../../components/documents/VerifyModal.jsx';
 import { DOCUMENT_TYPES, DOCUMENT_TYPE_CONFIG } from '../../constants/document.js';
 import Loader from '../../components/common/Loader.jsx';
 
@@ -53,10 +51,10 @@ const PageSkeleton = () => (
 const StudentDocumentsPage = () => {
   const { studentId } = useParams();
   const [rejectTarget, setRejectTarget] = useState(null);
+  const [verifyTarget, setVerifyTarget] = useState(null);
 
   const { data: studentData } = useGetStudentByIdQuery(studentId);
   const { data, isLoading, error } = useGetDocumentsByStudentQuery(studentId);
-  const [verifyDoc, { isLoading: verifying }] = useVerifyDocumentMutation();
 
   const student = studentData?.data;
   const grouped = data?.data?.grouped || {};
@@ -66,10 +64,7 @@ const StudentDocumentsPage = () => {
   const verified = allDocs.filter((d) => d.status === 'verified').length;
   const rejected = allDocs.filter((d) => d.status === 'rejected').length;
 
-  const handleVerify = async (doc) => {
-    if (!window.confirm(`Verify "${doc.title}"?`)) return;
-    await verifyDoc(doc._id);
-  };
+  const handleVerify = (doc) => setVerifyTarget(doc);
 
   // Types that actually have documents (show in order)
   const typesWithDocs = DOCUMENT_TYPES.filter((t) => (grouped[t] || []).length > 0);
@@ -161,6 +156,12 @@ const StudentDocumentsPage = () => {
           onClose={() => setRejectTarget(null)}
         />
       )}
+
+      {/* Verify modal */}
+      <VerifyModal
+        document={verifyTarget}
+        onClose={() => setVerifyTarget(null)}
+      />
     </DashboardLayout>
   );
 };

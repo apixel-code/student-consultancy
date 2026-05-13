@@ -8,6 +8,7 @@ import {
 } from '../../features/courses/courseApi.js';
 import { useGetAllUniversitiesQuery } from '../../features/universities/universityApi.js';
 import Loader from '../../components/common/Loader.jsx';
+import DeleteModal from '../../components/common/DeleteModal.jsx';
 
 const LEVELS = ['Bachelor', 'Master', 'PhD', 'Diploma', 'Certificate'];
 
@@ -26,12 +27,13 @@ const ManageCourses = () => {
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyForm);
+  const [deleteTarget, setDeleteTarget] = useState(null); // { id, name }
 
   const { data, isLoading } = useGetAllCoursesQuery({ page, limit: 10, level: levelFilter || undefined });
   const { data: uniData } = useGetAllUniversitiesQuery({ limit: 100 });
   const [createCourse, { isLoading: creating }] = useCreateCourseMutation();
   const [updateCourse, { isLoading: updating }] = useUpdateCourseMutation();
-  const [deleteCourse] = useDeleteCourseMutation();
+  const [deleteCourse, { isLoading: deleting }] = useDeleteCourseMutation();
 
   const courses = data?.data?.courses || [];
   const universities = uniData?.data?.universities || [];
@@ -55,6 +57,12 @@ const ManageCourses = () => {
       ? await updateCourse({ id: editing, ...payload })
       : await createCourse(payload);
     if (result.data) { setShowModal(false); setEditing(null); }
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    await deleteCourse(deleteTarget.id);
+    setDeleteTarget(null);
   };
 
   return (
@@ -91,11 +99,18 @@ const ManageCourses = () => {
                       <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">{c.level}</span>
                     </td>
                     <td className="py-3 px-3 text-gray-500">{c.duration}</td>
-                    <td className="py-3 px-3 text-gray-500">{c.tuitionFee?.amount ? `$${c.tuitionFee.amount.toLocaleString()}` : '—'}</td>
+                    <td className="py-3 px-3 text-gray-500">
+                      {c.tuitionFee?.amount ? `$${c.tuitionFee.amount.toLocaleString()}` : '—'}
+                    </td>
                     <td className="py-3 px-3">
                       <div className="flex gap-2">
                         <button onClick={() => openEdit(c)} className="text-xs text-blue-600 hover:underline">Edit</button>
-                        <button onClick={() => window.confirm('Delete course?') && deleteCourse(c._id)} className="text-xs text-red-600 hover:underline">Delete</button>
+                        <button
+                          onClick={() => setDeleteTarget({ id: c._id, name: c.name })}
+                          className="text-xs text-red-600 hover:underline"
+                        >
+                          Delete
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -114,6 +129,7 @@ const ManageCourses = () => {
         )}
       </div>
 
+      {/* Add / Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
@@ -144,13 +160,17 @@ const ManageCourses = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Tuition Fee (USD/year)</label>
-                <input type="number" min={0} value={form.tuitionFee.amount} onChange={(e) => setForm(f => ({ ...f, tuitionFee: { ...f.tuitionFee, amount: e.target.value } }))} className="input-field" placeholder="e.g. 15000" />
+                <input type="number" min={0} value={form.tuitionFee.amount}
+                  onChange={(e) => setForm(f => ({ ...f, tuitionFee: { ...f.tuitionFee, amount: e.target.value } }))}
+                  className="input-field" placeholder="e.g. 15000" />
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {[['IELTS', 'ielts'], ['TOEFL', 'toefl'], ['Min GPA', 'gpa']].map(([label, key]) => (
                   <div key={key}>
                     <label className="block text-xs font-medium text-gray-700 mb-1">{label}</label>
-                    <input type="number" step="0.1" min={0} value={form.requirements[key]} onChange={(e) => setForm(f => ({ ...f, requirements: { ...f.requirements, [key]: e.target.value } }))} className="input-field text-sm" />
+                    <input type="number" step="0.1" min={0} value={form.requirements[key]}
+                      onChange={(e) => setForm(f => ({ ...f, requirements: { ...f.requirements, [key]: e.target.value } }))}
+                      className="input-field text-sm" />
                   </div>
                 ))}
               </div>
@@ -164,6 +184,16 @@ const ManageCourses = () => {
           </div>
         </div>
       )}
+
+      <DeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete Course?"
+        description="This course will be permanently deleted and removed from all applications."
+        itemName={deleteTarget?.name}
+        loading={deleting}
+      />
     </DashboardLayout>
   );
 };

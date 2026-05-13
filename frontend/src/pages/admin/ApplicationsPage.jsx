@@ -14,6 +14,7 @@ import CreateApplicationModal from '../../components/applications/CreateApplicat
 import UpdateStatusModal from '../../components/applications/UpdateStatusModal.jsx';
 import { APPLICATION_STATUSES, STATUS_CONFIG, formatIntake } from '../../constants/application.js';
 import { useGetAllUsersQuery } from '../../features/users/userApi.js';
+import DeleteModal from '../../components/common/DeleteModal.jsx';
 
 // ─── Table Skeleton ────────────────────────────────────────────────────────────
 const TableSkeleton = () => (
@@ -50,8 +51,9 @@ const ApplicationsPage = () => {
   const [filters, setFilters] = useState({ status: '', counselorId: '', dateFrom: '', dateTo: '' });
   const [page, setPage] = useState(1);
   const [showCreate, setShowCreate] = useState(false);
-  const [statusModal, setStatusModal] = useState(null); // app object
-  const [detailApp, setDetailApp] = useState(null);     // app object for timeline drawer
+  const [statusModal, setStatusModal] = useState(null);
+  const [detailApp, setDetailApp] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null); // { id, name }
 
   const queryParams = { page, limit: 20, ...Object.fromEntries(Object.entries(filters).filter(([, v]) => v)) };
 
@@ -75,8 +77,10 @@ const ApplicationsPage = () => {
     setPage(1);
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Delete this application?')) await deleteApp(id);
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    await deleteApp(deleteTarget.id);
+    setDeleteTarget(null);
   };
 
   const handleKanbanStatusChange = ({ id, status }) => {
@@ -188,7 +192,7 @@ const ApplicationsPage = () => {
                               Status
                             </button>
                             <button
-                              onClick={() => handleDelete(app._id)}
+                              onClick={() => setDeleteTarget({ id: app._id, name: `${app.student?.name} → ${app.university?.name}` })}
                               className="text-xs text-red-500 hover:underline px-1"
                             >
                               Delete
@@ -247,6 +251,15 @@ const ApplicationsPage = () => {
           </div>
         </div>
       )}
+
+      <DeleteModal
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete Application?"
+        description="This application and its entire status history will be permanently deleted."
+        itemName={deleteTarget?.name}
+      />
     </DashboardLayout>
   );
 };
