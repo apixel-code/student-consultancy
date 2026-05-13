@@ -59,6 +59,7 @@ export default function UniversitiesPage() {
         title="Partner Universities"
         subtitle="Explore our network of 50+ partner universities across 15+ countries — find the right fit for your goals."
         breadcrumb="Universities"
+        image="https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1600&q=80"
       />
 
       {/* ── Filters ── */}

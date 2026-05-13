@@ -98,6 +98,7 @@ export default function ServicesPage() {
         title="Our Services"
         subtitle="End-to-end study abroad support — from choosing a university to settling in your new country."
         breadcrumb="Services"
+        image="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1600&q=80"
       />
 
       {/* ── Service Cards ── */}
