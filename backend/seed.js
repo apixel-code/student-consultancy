@@ -13,6 +13,7 @@ import University from './models/University.js';
 import Course from './models/Course.js';
 import Application from './models/Application.js';
 import Document from './models/Document.js';
+import SuccessStory from './models/SuccessStory.js';
 
 const FRESH = process.argv.includes('--fresh');
 
@@ -93,6 +94,69 @@ const STUDENT_DATA = [
   { name: 'Mitu Islam',       email: 'mitu@student.com',    phone: '+8801700000000' },
 ];
 
+const SUCCESS_STORIES = [
+  {
+    title: "From Dhaka to London: How I Got Into King's College",
+    student: 'Md. Raihan Islam',
+    program: "MSc Data Science, King's College London",
+    country: 'United Kingdom',
+    year: '2024',
+    ytId: 'dQw4w9WgXcQ',
+    initials: 'MR',
+    isActive: true,
+  },
+  {
+    title: 'My Canadian University Journey — Full Process Explained',
+    student: 'Nadia Rahman',
+    program: 'MBA, University of Toronto',
+    country: 'Canada',
+    year: '2024',
+    ytId: 'ScMzIvxBSi4',
+    initials: 'NR',
+    isActive: true,
+  },
+  {
+    title: 'Free Education in Germany: My TU Munich Story',
+    student: 'Ariful Haque',
+    program: 'MSc Mechanical Engineering, TU Munich',
+    country: 'Germany',
+    year: '2023',
+    ytId: 'jNQXAC9IVRw',
+    initials: 'AH',
+    isActive: true,
+  },
+  {
+    title: 'Australia Scholarship & Student Visa — Everything I Did',
+    student: 'Sabrina Akter',
+    program: 'BSc Computer Science, University of Melbourne',
+    country: 'Australia',
+    year: '2024',
+    ytId: 'M7lc1UVf-VE',
+    initials: 'SA',
+    isActive: true,
+  },
+  {
+    title: 'How I Got into University of Toronto with Scholarship',
+    student: 'Tanvir Ahmed',
+    program: 'MEng Software Engineering, University of Waterloo',
+    country: 'Canada',
+    year: '2023',
+    ytId: 'kJQP7kiw5Fk',
+    initials: 'TA',
+    isActive: false,
+  },
+  {
+    title: 'USA Student Visa F1 — My Complete Experience',
+    student: 'Farida Begum',
+    program: 'MS Computer Science, Northeastern University',
+    country: 'USA',
+    year: '2023',
+    ytId: 'OPf0YbXqDm0',
+    initials: 'FB',
+    isActive: true,
+  },
+];
+
 const STATUSES = [
   'Inquiry', 'Applied', 'Document Submitted',
   'Offer Received', 'Visa Applied', 'Visa Approved',
@@ -126,6 +190,7 @@ async function seed() {
       Course.deleteMany({}),
       Application.deleteMany({}),
       Document.deleteMany({}),
+      SuccessStory.deleteMany({}),
     ]);
     log('Wiped all collections (--fresh mode)');
   } else {
@@ -290,6 +355,13 @@ async function seed() {
     }
   }
   log('Document records created');
+
+  // ── 6. Success Stories ────────────────────────────────────────────────────
+  console.log('\n🎬  Creating success stories…');
+  await SuccessStory.insertMany(
+    SUCCESS_STORIES.map(s => ({ ...s, createdBy: admin._id }))
+  );
+  log(`Success stories created (${SUCCESS_STORIES.length})`);
 
   // ── Summary ───────────────────────────────────────────────────────────────
   console.log('\n─────────────────────────────────────────');

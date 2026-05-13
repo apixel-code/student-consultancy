@@ -31,6 +31,26 @@ export const protect = asyncHandler(async (req, res, next) => {
   next();
 });
 
+export const optionalAuth = asyncHandler(async (req, _res, next) => {
+  let token;
+  if (req.headers.authorization?.startsWith('Bearer ')) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies?.accessToken) {
+    token = req.cookies.accessToken;
+  }
+
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+      const user = await User.findById(decoded.id).select('-password -refreshToken');
+      if (user?.isActive) req.user = user;
+    } catch {
+      // invalid / expired token — continue as guest
+    }
+  }
+  next();
+});
+
 export const authorizeRoles = (...roles) => {
   return (req, _res, next) => {
     if (!roles.includes(req.user.role)) {

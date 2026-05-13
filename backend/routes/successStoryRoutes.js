@@ -5,12 +5,12 @@ import {
   updateSuccessStory,
   deleteSuccessStory,
 } from '../controllers/successStoryController.js';
-import { protect, authorizeRoles } from '../middleware/authMiddleware.js';
+import { protect, authorizeRoles, optionalAuth } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
-// Public — returns only active stories; staff see all (handled in controller)
-router.get('/', protect, getAllSuccessStories);
+// Public — guests see only active; logged-in staff see all
+router.get('/', optionalAuth, getAllSuccessStories);
 
 // Staff only
 router.use(protect, authorizeRoles('admin', 'counselor'));
