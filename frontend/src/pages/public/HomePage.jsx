@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGetAllSuccessStoriesQuery } from '../../features/successStories/successStoryApi';
+import YouTubeModal from '../../components/public/YouTubeModal';
 
 /* ─────────────────────────── animation presets ─────────────────────────── */
 const ease = [0.22, 1, 0.36, 1];
@@ -144,6 +145,8 @@ export default function HomePage() {
 
   const { data: storiesData, isLoading: storiesLoading } = useGetAllSuccessStoriesQuery();
   const successVideos = (storiesData?.data || []).filter(s => s.isActive);
+
+  const [activeVideo, setActiveVideo] = useState(null);
 
   return (
     <>
@@ -441,14 +444,12 @@ export default function HomePage() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
             className="grid md:grid-cols-3 gap-6">
             {successVideos.map(v => (
-              <motion.a
+              <motion.div
                 key={v._id}
-                href={`https://www.youtube.com/watch?v=${v.ytId}`}
-                target="_blank"
-                rel="noopener noreferrer"
+                onClick={() => setActiveVideo(v)}
                 variants={fadeUp}
                 whileHover={{ y: -6 }}
-                className="group block rounded-2xl overflow-hidden border transition-all duration-300 hover:border-red-500/40 hover:shadow-[0_0_40px_rgba(239,68,68,0.12)]"
+                className="group block rounded-2xl overflow-hidden border transition-all duration-300 hover:border-red-500/40 hover:shadow-[0_0_40px_rgba(239,68,68,0.12)] cursor-pointer"
                 style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.09)' }}
               >
                 {/* thumbnail */}
@@ -499,7 +500,7 @@ export default function HomePage() {
                     </div>
                   </div>
                 </div>
-              </motion.a>
+              </motion.div>
             ))}
           </motion.div>
           )}
@@ -608,6 +609,8 @@ export default function HomePage() {
           </div>
         </motion.div>
       </section>
+
+      <YouTubeModal video={activeVideo} onClose={() => setActiveVideo(null)} />
     </>
   );
 }

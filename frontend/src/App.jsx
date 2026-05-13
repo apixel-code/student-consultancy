@@ -11,6 +11,12 @@ const App = () => {
   const { isAuthenticated } = useAuth();
   const [refreshToken] = useRefreshTokenMutation();
 
+  // On mount: validate stored token immediately — clears stale tokens (e.g. after DB wipe)
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    refreshToken().unwrap().catch(() => dispatch(logout()));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Silently refresh access token every 14 minutes while logged in
   useEffect(() => {
     if (!isAuthenticated) return;
