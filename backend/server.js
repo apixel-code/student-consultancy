@@ -14,6 +14,7 @@ import courseRoutes from './routes/courseRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
 import documentRoutes from './routes/documentRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
+import successStoryRoutes from './routes/successStoryRoutes.js';
 
 connectDB();
 
@@ -45,6 +46,7 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/success-stories', successStoryRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

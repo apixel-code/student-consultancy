@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useGetAllSuccessStoriesQuery } from '../../features/successStories/successStoryApi';
 
 /* ─────────────────────────── animation presets ─────────────────────────── */
 const ease = [0.22, 1, 0.36, 1];
@@ -11,7 +12,7 @@ const stagger = { visible: { transition: { staggerChildren: 0.11 } } };
 /* ─────────────────────────── data ─────────────────────────── */
 const HERO_SLIDES = [
   {
-    img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1600&q=80',
+    img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1600&q=80',
     badge: 'Trusted by 500+ Students · AIRC Certified Since 2015',
     h1: 'Turn Your Study Abroad',
     accent: 'Dream Into Reality',
@@ -77,36 +78,6 @@ const DESTINATIONS = [
     img: 'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?auto=format&fit=crop&w=600&q=70', tag: 'Affordable' },
 ];
 
-/* YouTube video IDs — replace with your actual StudyConsult video IDs */
-const SUCCESS_VIDEOS = [
-  {
-    ytId: 'kzx30pObBu8',
-    title: "From Dhaka to London: How I Got Into King's College",
-    student: 'Md. Raihan Islam',
-    program: "MSc Data Science, King's College London",
-    country: '🇬🇧 United Kingdom',
-    year: '2024',
-    initials: 'MR',
-  },
-  {
-    ytId: 'Q0Wr8RVg5cM',
-    title: 'My Canadian University Journey — Full Process Explained',
-    student: 'Nadia Rahman',
-    program: 'MBA, University of Toronto',
-    country: '🇨🇦 Canada',
-    year: '2024',
-    initials: 'NR',
-  },
-  {
-    ytId: '8wDhFgCnhE4',
-    title: 'Free Education in Germany: My TU Munich Story',
-    student: 'Ariful Haque',
-    program: 'MSc Mechanical Engineering, TU Munich',
-    country: '🇩🇪 Germany',
-    year: '2023',
-    initials: 'AH',
-  },
-];
 
 const TESTIMONIALS = [
   {
@@ -164,13 +135,15 @@ export default function HomePage() {
   const [paused, setPaused] = useState(false);
 
   const goNext = useCallback(() => setSlide(s => (s + 1) % HERO_SLIDES.length), []);
-  const goPrev = useCallback(() => setSlide(s => (s - 1 + HERO_SLIDES.length) % HERO_SLIDES.length), []);
 
   useEffect(() => {
     if (paused) return;
     const t = setInterval(goNext, 5500);
     return () => clearInterval(t);
   }, [goNext, paused]);
+
+  const { data: storiesData, isLoading: storiesLoading } = useGetAllSuccessStoriesQuery();
+  const successVideos = (storiesData?.data || []).filter(s => s.isActive);
 
   return (
     <>
@@ -287,21 +260,6 @@ export default function HomePage() {
             ))}
           </div>
 
-          {/* ── Prev / Next arrows ── */}
-          {[
-            { action: goPrev, pos: 'right-16',
-              path: 'M15 19l-7-7 7-7' },
-            { action: goNext, pos: 'right-4 sm:right-6 lg:right-8',
-              path: 'M9 5l7 7-7 7' },
-          ].map(({ action, pos, path }, idx) => (
-            <button key={idx} onClick={action}
-              className={`absolute bottom-8 ${pos} w-9 h-9 rounded-full border flex items-center justify-center text-white hover:bg-white/20 transition-colors`}
-              style={{ background: 'rgba(255,255,255,0.08)', borderColor: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}>
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d={path} />
-              </svg>
-            </button>
-          ))}
         </div>
       </section>
 
@@ -461,11 +419,30 @@ export default function HomePage() {
             </p>
           </motion.div>
 
+          {storiesLoading && (
+            <div className="grid md:grid-cols-3 gap-6">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="rounded-2xl overflow-hidden border border-white/10" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                  <div className="animate-pulse bg-white/10" style={{ aspectRatio: '16/9' }} />
+                  <div className="p-5 space-y-2">
+                    <div className="h-3 bg-white/10 rounded animate-pulse w-3/4" />
+                    <div className="h-3 bg-white/10 rounded animate-pulse w-1/2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {!storiesLoading && successVideos.length === 0 && (
+            <p className="text-center text-slate-500 py-10">No success stories added yet.</p>
+          )}
+
+          {!storiesLoading && successVideos.length > 0 && (
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
             className="grid md:grid-cols-3 gap-6">
-            {SUCCESS_VIDEOS.map(v => (
+            {successVideos.map(v => (
               <motion.a
-                key={v.ytId}
+                key={v._id}
                 href={`https://www.youtube.com/watch?v=${v.ytId}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -525,6 +502,7 @@ export default function HomePage() {
               </motion.a>
             ))}
           </motion.div>
+          )}
 
           {/* See all on YouTube */}
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}

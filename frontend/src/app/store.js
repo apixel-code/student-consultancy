@@ -9,6 +9,7 @@ import { universityApi } from '../features/universities/universityApi.js';
 import { courseApi } from '../features/courses/courseApi.js';
 import { documentApi } from '../features/documents/documentApi.js';
 import { dashboardApi } from '../features/dashboard/dashboardApi.js';
+import { successStoryApi } from '../features/successStories/successStoryApi.js';
 
 const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ const store = configureStore({
     [courseApi.reducerPath]: courseApi.reducer,
     [documentApi.reducerPath]: documentApi.reducer,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
+    [successStoryApi.reducerPath]: successStoryApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -31,7 +33,8 @@ const store = configureStore({
       universityApi.middleware,
       courseApi.middleware,
       documentApi.middleware,
-      dashboardApi.middleware
+      dashboardApi.middleware,
+      successStoryApi.middleware
     ),
 });
 

@@ -4,16 +4,18 @@ import useAuth from '../../hooks/useAuth.js';
 
 const NAV_LINKS = {
   admin: [
-    { label: 'Dashboard',    path: '/admin/dashboard',    icon: '📊' },
-    { label: 'Applications', path: '/admin/applications', icon: '📋' },
-    { label: 'Universities', path: '/admin/universities', icon: '🏛️' },
-    { label: 'Courses',      path: '/admin/courses',      icon: '📚' },
-    { label: 'Users',        path: '/admin/users',        icon: '👥' },
+    { label: 'Dashboard',       path: '/admin/dashboard',    icon: '📊' },
+    { label: 'Applications',    path: '/admin/applications', icon: '📋' },
+    { label: 'Universities',    path: '/admin/universities', icon: '🏛️' },
+    { label: 'Courses',         path: '/admin/courses',      icon: '📚' },
+    { label: 'Users',           path: '/admin/users',        icon: '👥' },
+    { label: 'Success Stories', path: '/success-stories',    icon: '🎬' },
   ],
   counselor: [
-    { label: 'Dashboard',    path: '/counselor/dashboard',    icon: '📊' },
-    { label: 'Applications', path: '/counselor/applications', icon: '📋' },
-    { label: 'My Students',  path: '/counselor/students',     icon: '🎓' },
+    { label: 'Dashboard',       path: '/counselor/dashboard',    icon: '📊' },
+    { label: 'Applications',    path: '/counselor/applications', icon: '📋' },
+    { label: 'My Students',     path: '/counselor/students',     icon: '🎓' },
+    { label: 'Success Stories', path: '/success-stories',        icon: '🎬' },
   ],
   student: [
     { label: 'Dashboard',       path: '/student/dashboard',    icon: '📊' },

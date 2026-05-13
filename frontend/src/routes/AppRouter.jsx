@@ -19,6 +19,7 @@ import ApplicationsPage from '../pages/admin/ApplicationsPage.jsx';
 import ManageUsers from '../pages/admin/ManageUsers.jsx';
 import ManageUniversities from '../pages/admin/ManageUniversities.jsx';
 import ManageCourses from '../pages/admin/ManageCourses.jsx';
+import ManageSuccessStories from '../pages/admin/ManageSuccessStories.jsx';
 
 // Counselor
 import CounselorDashboard from '../pages/counselor/CounselorDashboard.jsx';
@@ -63,6 +64,7 @@ const AppRouter = () => (
 
     {/* ── Admin + Counselor ── */}
     <Route element={<ProtectedRoute allowedRoles={['admin', 'counselor']} />}>
+      <Route path="/success-stories" element={<ManageSuccessStories />} />
       <Route path="/counselor/dashboard" element={<CounselorDashboard />} />
       <Route path="/counselor/applications" element={<CounselorApplicationsPage />} />
       <Route path="/counselor/students" element={<ManageStudents />} />
