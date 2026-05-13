@@ -190,33 +190,33 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 52 }}
               animate={{ opacity: 1, y: 0, transition: { duration: 0.75, delay: 0.15, ease } }}
               exit={{   opacity: 0, y: -28, transition: { duration: 0.45 } }}
-              className="max-w-3xl pt-24 pb-40"
+              className="max-w-3xl pt-20 sm:pt-24 pb-52 sm:pb-44"
             >
               {/* badge pill */}
-              <div className="inline-flex items-center gap-2.5 rounded-full px-4 py-1.5 mb-8 border"
+              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-6 sm:mb-8 border overflow-hidden"
                 style={{ background: 'rgba(245,158,11,0.1)', borderColor: 'rgba(245,158,11,0.3)' }}>
-                <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: '#F59E0B' }} />
-                <span className="text-sm font-semibold tracking-wide" style={{ color: '#F59E0B' }}>
+                <span className="w-2 h-2 rounded-full flex-shrink-0 animate-pulse" style={{ background: '#F59E0B' }} />
+                <span className="text-xs sm:text-sm font-semibold tracking-wide truncate" style={{ color: '#F59E0B' }}>
                   {HERO_SLIDES[slide].badge}
                 </span>
               </div>
 
               {/* headline */}
-              <h1 className="font-extrabold text-white leading-[1.07] tracking-tight mb-6"
-                style={{ fontSize: 'clamp(2.6rem, 5.5vw, 4.25rem)' }}>
+              <h1 className="font-extrabold text-white leading-[1.07] tracking-tight mb-5 sm:mb-6"
+                style={{ fontSize: 'clamp(1.9rem, 5.5vw, 4.25rem)' }}>
                 {HERO_SLIDES[slide].h1}<br />
                 <GradText>{HERO_SLIDES[slide].accent}</GradText>
               </h1>
 
               {/* subtext */}
-              <p className="text-xl text-slate-300 leading-relaxed mb-10 max-w-2xl">
+              <p className="text-sm sm:text-base md:text-xl text-slate-300 leading-relaxed mb-8 sm:mb-10 max-w-2xl">
                 {HERO_SLIDES[slide].sub}
               </p>
 
               {/* CTA buttons */}
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-3 sm:gap-4">
                 <Link to={HERO_SLIDES[slide].ctaHref}
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-slate-900 transition-all hover:brightness-110 hover:scale-105 active:scale-95"
+                  className="inline-flex items-center gap-2 px-5 py-3 sm:px-8 sm:py-4 rounded-xl font-bold text-sm sm:text-base text-slate-900 transition-all hover:brightness-110 hover:scale-105 active:scale-95"
                   style={{ background: 'linear-gradient(135deg,#F59E0B 0%,#FBBF24 100%)' }}>
                   {HERO_SLIDES[slide].cta}
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -224,7 +224,7 @@ export default function HomePage() {
                   </svg>
                 </Link>
                 <Link to="/universities"
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white border-2 hover:bg-white/10 transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-3 sm:px-8 sm:py-4 rounded-xl font-semibold text-sm sm:text-base text-white border-2 hover:bg-white/10 transition-colors"
                   style={{ borderColor: 'rgba(255,255,255,0.25)' }}>
                   Browse Universities
                 </Link>
@@ -233,17 +233,17 @@ export default function HomePage() {
           </AnimatePresence>
 
           {/* ── Floating stat pills — bottom of hero ── */}
-          <div className="absolute bottom-24 left-4 sm:left-6 lg:left-8 right-4">
+          <div className="absolute bottom-20 sm:bottom-24 left-4 sm:left-6 lg:left-8 right-4">
             <motion.div initial="hidden" animate="visible" variants={stagger}
-              className="flex flex-wrap gap-3">
+              className="flex flex-wrap gap-2 sm:gap-3">
               {STATS.map(s => (
                 <motion.div key={s.label} variants={fadeIn}
-                  className="flex items-center gap-3 rounded-2xl px-5 py-3 border"
+                  className="flex items-center gap-2 sm:gap-3 rounded-2xl px-3 py-2 sm:px-5 sm:py-3 border"
                   style={{ background: 'rgba(15,23,42,0.75)', backdropFilter: 'blur(14px)', borderColor: 'rgba(255,255,255,0.1)' }}>
-                  <span className="text-xl">{s.icon}</span>
+                  <span className="text-base sm:text-xl">{s.icon}</span>
                   <div>
-                    <p className="text-xl font-extrabold text-white leading-none">{s.value}</p>
-                    <p className="text-xs text-slate-400 font-medium mt-0.5">{s.label}</p>
+                    <p className="text-base sm:text-xl font-extrabold text-white leading-none">{s.value}</p>
+                    <p className="text-[10px] sm:text-xs text-slate-400 font-medium mt-0.5">{s.label}</p>
                   </div>
                 </motion.div>
               ))}
@@ -423,7 +423,7 @@ export default function HomePage() {
           </motion.div>
 
           {storiesLoading && (
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
               {[...Array(3)].map((_, i) => (
                 <div key={i} className="rounded-2xl overflow-hidden border border-white/10" style={{ background: 'rgba(255,255,255,0.04)' }}>
                   <div className="animate-pulse bg-white/10" style={{ aspectRatio: '16/9' }} />
@@ -442,7 +442,7 @@ export default function HomePage() {
 
           {!storiesLoading && successVideos.length > 0 && (
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-            className="grid md:grid-cols-3 gap-6">
+            className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
             {successVideos.map(v => (
               <motion.div
                 key={v._id}
@@ -533,7 +533,7 @@ export default function HomePage() {
           </motion.div>
 
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
-            className="grid md:grid-cols-3 gap-8">
+            className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
             {TESTIMONIALS.map(t => (
               <motion.div key={t.name} variants={fadeUp}
                 className="relative rounded-2xl p-8 border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex flex-col"
@@ -592,9 +592,9 @@ export default function HomePage() {
           <p className="text-slate-300 text-lg mb-10 max-w-xl mx-auto">
             Join 500+ students who turned their international education dreams into reality with StudyConsult.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
             <Link to="/contact"
-              className="inline-flex items-center gap-2 px-9 py-4 rounded-xl font-bold transition-all hover:brightness-110 hover:scale-105"
+              className="inline-flex items-center gap-2 px-6 py-3 sm:px-9 sm:py-4 rounded-xl font-bold text-sm sm:text-base transition-all hover:brightness-110 hover:scale-105"
               style={{ background: 'linear-gradient(135deg,#F59E0B 0%,#FBBF24 100%)', color: '#0F172A' }}>
               Get Free Consultation
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -602,7 +602,7 @@ export default function HomePage() {
               </svg>
             </Link>
             <Link to="/universities"
-              className="inline-flex items-center gap-2 px-9 py-4 rounded-xl font-semibold border-2 text-white hover:bg-white/10 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 sm:px-9 sm:py-4 rounded-xl font-semibold text-sm sm:text-base border-2 text-white hover:bg-white/10 transition-colors"
               style={{ borderColor: 'rgba(255,255,255,0.25)' }}>
               Browse Universities
             </Link>
