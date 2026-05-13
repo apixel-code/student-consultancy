@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import DashboardLayout from '../../layouts/DashboardLayout.jsx';
 import {
   useGetAllSuccessStoriesQuery,
   useCreateSuccessStoryMutation,
@@ -71,7 +72,8 @@ export default function ManageSuccessStories() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <DashboardLayout>
+    <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -269,5 +271,6 @@ export default function ManageSuccessStories() {
         </div>
       )}
     </div>
+    </DashboardLayout>
   );
 }
